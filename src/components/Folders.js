@@ -1,18 +1,18 @@
 import React, { useState } from "react";
+import { fData } from "../constant";
 
-const Folders = ({
-  folders,
-  sortFolderNames,
-  setSelectedFolderID,
-  setSelectedNote,
-}) => {
+const Folders = ({ setSelectedFolderID, chooseFolder }) => {
+  const [folders, setFolders] = useState(fData);
   const [visible, setVisible] = useState(false);
   const [newFolderName, setNewFolderName] = useState();
 
-  const chooseFolder = (id) => {
-    setSelectedFolderID(id);
-    // Initialize the selected note's content.
-    setSelectedNote(null);
+  const sortFolderNames = (tFolders) => {
+    const data = tFolders.sort((a, b) => {
+      if (a.name < b.name) return 1;
+      if (a.name > b.name) return -1;
+      return 0;
+    });
+    setFolders(data);
   };
 
   const generateFolder = () => {
@@ -22,7 +22,7 @@ const Folders = ({
     // Hide the input first.
     setVisible(false);
     // Set the new folder ID as the selected one to use when creating a new note.
-    setSelectedFolderID(newFolderID);
+    chooseFolder(newFolderID);
 
     // Generate folder object with unique ID.
     const newFolderObject = {
