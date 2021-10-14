@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { logger } from "workbox-core/_private";
 import Folders from "../components/Folders";
 import Notes from "../components/Notes";
 import { fData, nData } from "../constant";
@@ -15,6 +16,8 @@ const NotesApp = () => {
     // Call the api with fetch or axios to get datas.
     // After call, we should charge the datas using React hook useState: setFolders, setNotes.
     // Pending for now.
+    // Try catch api call. If catch, then, we should save logger to the file.
+    logger.error("error message here");
   }, []);
 
   const chooseFolder = (uid) => {

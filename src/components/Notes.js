@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { logger } from "workbox-core/_private";
 import { sort_by } from "../utils/CustomFunctions";
 import Content from "./Content";
 
@@ -94,6 +95,7 @@ const Notes = ({
 
   // Save content to a specific note.
   const saveContentToNote = (value) => {
+    // logger.info("Content has been saved successfully!");
     setSelectedNote({
       ...selectedNote,
       title: getTheNewNoteTitle(value),
