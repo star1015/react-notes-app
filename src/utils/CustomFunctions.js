@@ -1,5 +1,5 @@
+// Common function - sort array by unique parameter.
 export const sort_by = (field, reverse, primer) => {
-  console.log(primer)
   const key = primer
     ? function (x) {
         return primer(x[field]);

@@ -57,7 +57,6 @@ const Notes = ({ selectedFolderID }) => {
   const getTheSubTitleOfNote = (value) => {
     let newNoteName = "";
     var lines = value.split("\n");
-    console.log(lines);
     lines.map((item) => {
       if (item && item.length > 0) newNoteName = item;
       return item;
