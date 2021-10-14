@@ -84,7 +84,7 @@ const Folders = ({ chooseFolder }) => {
       </ul>
       {/* NEW FOLDER BUTTON */}
       <button
-        className="new-folder-btn"
+        className="btn-create"
         onClick={(e) => {
           setVisible(true);
         }}

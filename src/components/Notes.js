@@ -155,7 +155,7 @@ const Notes = ({ selectedFolderID }) => {
             </li>
           )}
         </ul>
-        {selectedFolderID && <button onClick={generateNote}>+ Note</button>}
+        {selectedFolderID && <button className="btn-create" onClick={generateNote}>+</button>}
       </div>
       {selectedNote && (
         <Content

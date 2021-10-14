@@ -20,7 +20,7 @@
   width: 100%;
   height: calc(800px - 54px);
 }
-.new-folder-btn {
+.btn-create {
   border-radius: 50%;
 }
 
@@ -98,6 +98,10 @@
 .notes-list ul li .item .date {
   font-size: 12px;
   margin-top: 5px;
+}
+.date span {
+  margin-left: 10px;
+  color: lightgrey;
 }
 .notes-list button {
   position: absolute;
