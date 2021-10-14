@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { fData } from "../constant";
 import { sort_by } from "../utils/CustomFunctions";
 
-const Folders = ({ chooseFolder }) => {
-  const [folders, setFolders] = useState(fData);
+const Folders = ({ folders, setFolders, chooseFolder }) => {
   const [visible, setVisible] = useState(false);
   const [newFolderName, setNewFolderName] = useState();
   const [curFolderID, setCurrentFolderID] = useState();
@@ -51,15 +49,17 @@ const Folders = ({ chooseFolder }) => {
         {folders &&
           folders.map((item) => {
             return (
-              <li key={item.id} className={`${curFolderID === item.id ? "selected" : "unselected"}`}>
-                <span
-                  onClick={() => {
-                    setCurrentFolderID(item.id);
-                    chooseFolder(item.id);
-                  }}
-                >
-                  {item.name}
-                </span>
+              <li
+                key={item.id}
+                className={`${
+                  curFolderID === item.id ? "selected" : "unselected"
+                }`}
+                onClick={() => {
+                  setCurrentFolderID(item.id);
+                  chooseFolder(item.id);
+                }}
+              >
+                <span>{item.name}</span>
               </li>
             );
           })}
