@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { logger } from "workbox-core/_private";
 import { sort_by } from "../utils/CustomFunctions";
 import Content from "./Content";
 
