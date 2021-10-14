@@ -1,44 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { nData } from "../constant";
+import { sort_by } from "../utils/CustomFunctions";
 import Content from "./Content";
 
 const Notes = ({ selectedFolderID }) => {
   const [notes, setNotes] = useState();
   const [selectedNote, setSelectedNote] = useState();
-  const [isNewNote, setIsNewNote] = useState(false);
 
   useEffect(() => {
     setNotes(nData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getDateAndTime = () => {
+    const today = new Date();
+    const date =
+      today.getFullYear() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getDate();
+    const time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    return date + " " + time;
+  };
+
   const generateNote = () => {
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      time: "numeric",
-    };
     // Generate note object with unique ID.
     const newNoteObject = {
       id: notes && notes.length + 1,
       title: "New Note",
       content: "",
       folderId: selectedFolderID,
-      createdAt: new Date().toLocaleDateString("en-US", options),
-      modifiedAt: new Date().toLocaleDateString("en-US", options),
+      createdAt: getDateAndTime(),
+      modifiedAt: getDateAndTime(),
       isNew: true,
     };
 
     // Set the new note as selected one.
     setSelectedNote(newNoteObject);
-    setIsNewNote(true);
     // Save the new note into notes array.
     const data = [...notes, newNoteObject];
     setNotes(data);
   };
 
+  // Get the title of note.
   const getTheNewNoteTitle = (value) => {
     let newNoteName = "";
     var lines = value.split("\n");
@@ -46,8 +53,32 @@ const Notes = ({ selectedFolderID }) => {
     return newNoteName;
   };
 
+  // Get the sub title of note.
+  const getTheSubTitleOfNote = (value) => {
+    let newNoteName = "";
+    var lines = value.split("\n");
+    console.log(lines);
+    lines.map((item) => {
+      if (item && item.length > 0) newNoteName = item;
+      return item;
+    });
+    return newNoteName;
+  };
+
+  // Sort the notes list by modified date.
+  const sortNotesByDate = (data) => {
+    // Error handler
+    if (!data) return;
+
+    const sortByDate = data.sort(
+      sort_by("modifiedAt", true, (a) => new Date(a))
+    );
+    return sortByDate;
+  };
+
+  // Save note to notes list.
   const saveNoteToNotes = () => {
-    if (isNewNote) setIsNewNote(false);
+    setSelectedNote({ ...selectedNote, isNew: false });
 
     const data = notes.map((item) => {
       if (item.id === selectedNote.id) {
@@ -57,17 +88,19 @@ const Notes = ({ selectedFolderID }) => {
       }
       return item;
     });
-    setNotes(data);
+    setNotes(sortNotesByDate(data));
   };
 
+  // Save content to a specific note.
   const saveContentToNote = (value) => {
     setSelectedNote({
       ...selectedNote,
       title: getTheNewNoteTitle(value),
       content: value,
-      isNew: false,
+      isNew: true,
     });
   };
+
   return (
     <React.Fragment>
       <div className="notes-list">
@@ -75,26 +108,50 @@ const Notes = ({ selectedFolderID }) => {
         <ul>
           {notes &&
             notes
-              .filter((item) => item.folderId === selectedFolderID && item.isNew === false )
+              .filter(
+                (item) =>
+                  item.folderId === selectedFolderID && item.isNew === false
+              )
               .map((item) => {
                 return (
                   <li key={item.id}>
-                    <span
-                      onClick={() => {
-                        setIsNewNote(false);
-                        setSelectedNote(item);
-                      }}
-                    >
-                      {item.title}
-                    </span>
+                    <div className="item">
+                      <p
+                        className="title"
+                        onClick={() => {
+                          setSelectedNote(item);
+                        }}
+                      >
+                        {item.title}
+                      </p>
+                      <p className="date">
+                        {item.modifiedAt}{" "}
+                        <span>
+                          {getTheSubTitleOfNote(item.content).substring(1, 5)}
+                        </span>
+                      </p>
+                    </div>
                   </li>
                 );
               })}
           {selectedNote && selectedNote.isNew === true && (
             <li key={selectedNote.id}>
-              <span onClick={() => setSelectedNote(selectedNote)}>
-                {selectedNote.title}
-              </span>
+              <div className="item">
+                <p
+                  className="title"
+                  onClick={() => {
+                    setSelectedNote(selectedNote);
+                  }}
+                >
+                  {selectedNote.title}
+                </p>
+                <p className="date">
+                  {selectedNote.modifiedAt}{" "}
+                  <span>
+                    {getTheSubTitleOfNote(selectedNote.content).substring(0, 5)}
+                  </span>
+                </p>
+              </div>
             </li>
           )}
         </ul>

@@ -6,9 +6,8 @@ const NotesApp = () => {
   const [selectedFolderID, setSelectedFolderID] = useState();
 
   const chooseFolder = (id) => {
-    setSelectedFolderID(id)
+    setSelectedFolderID(id);
   };
-
   return (
     <div className="notes-app-container">
       <header className="app-header"></header>

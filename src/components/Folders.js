@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { fData } from "../constant";
+import { sort_by } from "../utils/CustomFunctions";
 
-const Folders = ({ setSelectedFolderID, chooseFolder }) => {
+const Folders = ({ chooseFolder }) => {
   const [folders, setFolders] = useState(fData);
   const [visible, setVisible] = useState(false);
   const [newFolderName, setNewFolderName] = useState();
+  const [curFolderID, setCurrentFolderID] = useState();
 
   const sortFolderNames = (tFolders) => {
-    const data = tFolders.sort((a, b) => {
-      if (a.name < b.name) return 1;
-      if (a.name > b.name) return -1;
-      return 0;
-    });
+    const data = tFolders.sort(
+      sort_by("name", false, (a) => a && a.toUpperCase())
+    );
     setFolders(data);
   };
 
@@ -37,9 +37,12 @@ const Folders = ({ setSelectedFolderID, chooseFolder }) => {
     setNewFolderName("");
   };
 
-  const onPressEnter = (e) => {
-    if (e.keyCode === 13) generateFolder();
-  }
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      generateFolder();
+    }
+  };
 
   return (
     <div className="folder-list">
@@ -48,8 +51,15 @@ const Folders = ({ setSelectedFolderID, chooseFolder }) => {
         {folders &&
           folders.map((item) => {
             return (
-              <li key={item.id}>
-                <span onClick={() => chooseFolder(item.id)}>{item.name}</span>
+              <li key={item.id} className={`${curFolderID === item.id ? "selected" : "unselected"}`}>
+                <span
+                  onClick={() => {
+                    setCurrentFolderID(item.id);
+                    chooseFolder(item.id);
+                  }}
+                >
+                  {item.name}
+                </span>
               </li>
             );
           })}
@@ -58,25 +68,28 @@ const Folders = ({ setSelectedFolderID, chooseFolder }) => {
           className="new-folder-input"
           style={{ display: visible === true ? "block" : "none" }}
         >
+          {/* AUTO FOCUS SHOULD WORK. It seems after chrome has been updated, we should add something more. 
+              Pending for now - RESEARCH STEP*/}
           <input
-            autoFocus={true}
+            autofocus
             type="text"
             value={newFolderName}
             onChange={(e) => {
               setNewFolderName(e.target.value);
             }}
-            onKeyDown={onPressEnter}
+            onKeyDown={handleKeyDown}
             onBlur={generateFolder}
           ></input>
         </li>
       </ul>
       {/* NEW FOLDER BUTTON */}
       <button
+        className="new-folder-btn"
         onClick={(e) => {
           setVisible(true);
         }}
       >
-        + Folder
+        +
       </button>
     </div>
   );

@@ -9,11 +9,6 @@ const Content = ({ selectedNote, saveNoteToNotes, saveContentToNote }) => {
         autoFocus={true}
         value={selectedNote.content}
         onChange={(e) => saveContentToNote(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.keyCode === 13) {
-            saveNoteToNotes();
-          }
-        }}
         onBlur={saveNoteToNotes}
       />
     </div>
