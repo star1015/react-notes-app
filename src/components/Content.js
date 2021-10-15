@@ -1,6 +1,6 @@
 import React from "react";
 
-const Content = ({ selectedNote, saveNoteToNotes, saveContentToNote }) => {
+const Content = ({ selectedNote, saveNoteToNotes }) => {
   return (
     <div className="content">
       <p>{selectedNote.createdAt}</p>
@@ -8,8 +8,8 @@ const Content = ({ selectedNote, saveNoteToNotes, saveContentToNote }) => {
       <textarea
         autoFocus={true}
         value={selectedNote.content}
-        onChange={(e) => saveContentToNote(e.target.value)}
-        onBlur={saveNoteToNotes}
+        onChange={(e) => saveNoteToNotes(e.target.value)}
+        onBlur={(e) => saveNoteToNotes(e.target.value)}
       />
     </div>
   );

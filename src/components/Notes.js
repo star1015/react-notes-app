@@ -33,11 +33,11 @@ const Notes = ({
     const newNoteObject = {
       id: notes && notes.length + 1,
       title: "New Note",
+      subTitle: "",
       content: "",
       folderId: selectedFolderID,
       createdAt: getDateAndTime(),
       modifiedAt: getDateAndTime(),
-      isNew: true,
     };
 
     // Set the new note as selected one.
@@ -47,6 +47,10 @@ const Notes = ({
     setNotes(data);
   };
 
+  const checkTheContentHasOnlyTitleOrAnyMoreText = (value) => {
+    var lines = value.split("\n");
+    return lines.length === 1 ? true : false;
+  }
   // Get the title of note.
   const getTheNewNoteTitle = (value) => {
     let newNoteName = "";
@@ -59,10 +63,8 @@ const Notes = ({
   const getTheSubTitleOfNote = (value) => {
     let newNoteName = "";
     var lines = value.split("\n");
-    lines.map((item) => {
-      if (item && item.length > 0) newNoteName = item;
-      return item;
-    });
+    if (lines && lines.length > 1)
+      newNoteName = lines[1];
     return newNoteName;
   };
 
@@ -78,29 +80,21 @@ const Notes = ({
   };
 
   // Save note to notes list.
-  const saveNoteToNotes = () => {
-    setSelectedNote({ ...selectedNote, isNew: false });
-
+  const saveNoteToNotes = (value) => {
     const data = notes.map((item) => {
       if (item.id === selectedNote.id) {
-        item.title = selectedNote.title;
-        item.content = selectedNote.content;
-        item.isNew = false;
+        item.title = getTheNewNoteTitle(value);
+        // When user remove other texts and keep only the title in the text.
+        // The subTitle should be initialized.
+        if (checkTheContentHasOnlyTitleOrAnyMoreText(value)) item.subTitle = "";
+
+        // If subTitle already has been set. No need to update anymore.
+        item.subTitle = getTheSubTitleOfNote(value).substr(0, 5);
+        item.content = value;
       }
       return item;
     });
     setNotes(sortNotesByDate(data));
-  };
-
-  // Save content to a specific note.
-  const saveContentToNote = (value) => {
-    // logger.info("Content has been saved successfully!");
-    setSelectedNote({
-      ...selectedNote,
-      title: getTheNewNoteTitle(value),
-      content: value,
-      isNew: true,
-    });
   };
 
   return (
@@ -112,7 +106,7 @@ const Notes = ({
             notes
               .filter(
                 (item) =>
-                  item.folderId === selectedFolderID && item.isNew === false
+                  item.folderId === selectedFolderID
               )
               .map((item) => {
                 return (
@@ -128,34 +122,13 @@ const Notes = ({
                       <p className="date">
                         {item.modifiedAt}{" "}
                         <span>
-                          {getTheSubTitleOfNote(item.content).substring(1, 5)}
+                          {item.subTitle}
                         </span>
                       </p>
                     </div>
                   </li>
                 );
               })}
-          {selectedNote && selectedNote.isNew === true && (
-            <li key={selectedNote.id}>
-              <div className="item">
-                <p
-                  className="title"
-                  onClick={() => {
-                    setSelectedNote(selectedNote);
-                    chooseNote(selectedNote.id);
-                  }}
-                >
-                  {selectedNote.title}
-                </p>
-                <p className="date">
-                  {selectedNote.modifiedAt}{" "}
-                  <span>
-                    {getTheSubTitleOfNote(selectedNote.content).substring(0, 5)}
-                  </span>
-                </p>
-              </div>
-            </li>
-          )}
         </ul>
         {selectedFolderID && (
           <button className="btn-create" onClick={generateNote}>
@@ -167,7 +140,6 @@ const Notes = ({
         <Content
           selectedNote={selectedNote}
           saveNoteToNotes={saveNoteToNotes}
-          saveContentToNote={saveContentToNote}
         />
       )}
     </React.Fragment>
