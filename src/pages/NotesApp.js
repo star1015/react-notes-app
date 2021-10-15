@@ -9,6 +9,7 @@ const NotesApp = () => {
   const [notes, setNotes] = useState(nData);
   const [notesBySearchStr, setNotesBySearchStr] = useState();
   const [selectedFolderID, setSelectedFolderID] = useState();
+  const [isRemovedCurrentNote, setIsRemovedCurrentNote] = useState(false);
   const [selectedNoteID, setSelectedNoteID] = useState();
 
   useEffect(() => {
@@ -31,14 +32,18 @@ const NotesApp = () => {
   const removeNote = () => {
     if (!selectedNoteID) alert("Pls select the note you want to remove!");
 
+    setIsRemovedCurrentNote(true);
     const data = notes && notes.filter((item) => item.id !== selectedNoteID);
     setNotes(data);
     // Call the endpoint to remove the specific note.
   };
 
   const handleSearchNote = (e) => {
+    // Make it as lowercase whatever the current string is.
+    const searchStr = e.target.value.toLowerCase();
+
     const notesBySeachStr = notes.filter((item) =>
-      item.content.includes(e.target.value)
+      item.content.toLowerCase().includes(searchStr)
     );
 
     setNotesBySearchStr(notesBySeachStr);
@@ -74,6 +79,7 @@ const NotesApp = () => {
         <Notes
           notes={notesBySearchStr ? notesBySearchStr : notes}
           selectedFolderID={selectedFolderID}
+          isRemovedCurrentNote={isRemovedCurrentNote}
           setNotes={setNotes}
           chooseNote={chooseNote}
           initializeNotesBySearchStr={initializeNotesBySearchStr}

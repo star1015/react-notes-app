@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { sort_by } from "../utils/CustomFunctions";
 import Content from "./Content";
 
 const Notes = ({
   notes,
+  isRemovedCurrentNote,
   selectedFolderID,
   setNotes,
   chooseNote,
   initializeNotesBySearchStr,
 }) => {
   const [selectedNote, setSelectedNote] = useState();
+
+  useEffect(() => {
+    if (notes && isRemovedCurrentNote) {
+      const data = notes.filter((item) => item.id === selectedNote && selectedNote.id);
+      if (data && data.length === 0) setSelectedNote(null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRemovedCurrentNote]);
 
   const getDateAndTime = () => {
     const today = new Date();
